@@ -30,70 +30,76 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write      # ← Das fehlt!
+      packages: write      # 
       id-token: write      
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Get current version
-        id: current_version
-        run: |
-          CURRENT_VERSION=$(grep '^version:' ${{ env.CHART_PATH }}/Chart.yaml | awk '{print $2}')
-          echo "version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
-          echo "Current version: ${CURRENT_VERSION}"
+    
+      # - name: Get current version
+      #   id: current_version
+      #   run: |
+      #     CURRENT_VERSION=$(grep '^version:' ${{ env.CHART_PATH }}/Chart.yaml | awk '{print $2}')
+      #     echo "version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+      #     echo "Current version: ${CURRENT_VERSION}"
 
-      - name: Determine version bump type
-        id: bump_type
-        run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "type=${{ inputs.version_bump }}" >> $GITHUB_OUTPUT
-          else
-            # Auto-detect from commit messages (Conventional Commits)
-            COMMITS=$(git log --format=%s -n 10)
-            if echo "$COMMITS" | grep -qE "^(feat|feature)!:|BREAKING CHANGE"; then
-              echo "type=major" >> $GITHUB_OUTPUT
-            elif echo "$COMMITS" | grep -qE "^(feat|feature):"; then
-              echo "type=minor" >> $GITHUB_OUTPUT
-            else
-              echo "type=patch" >> $GITHUB_OUTPUT
-            fi
-          fi
-          echo "Bump type: $(cat $GITHUB_OUTPUT | grep type | cut -d= -f2)"
+      # - name: Determine version bump type
+      #   id: bump_type
+      #   run: |
+      #     if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+      #       echo "type=${{ inputs.version_bump }}" >> $GITHUB_OUTPUT
+      #     else
+      #       # Auto-detect from commit messages (Conventional Commits)
+      #       COMMITS=$(git log --format=%s -n 10)
+      #       if echo "$COMMITS" | grep -qE "^(feat|feature)!:|BREAKING CHANGE"; then
+      #         echo "type=major" >> $GITHUB_OUTPUT
+      #       elif echo "$COMMITS" | grep -qE "^(feat|feature):"; then
+      #         echo "type=minor" >> $GITHUB_OUTPUT
+      #       else
+      #         echo "type=patch" >> $GITHUB_OUTPUT
+      #       fi
+      #     fi
+      #     echo "Bump type: $(cat $GITHUB_OUTPUT | grep type | cut -d= -f2)"
 
-      - name: Bump version
-        id: new_version
-        run: |
-          CURRENT="${{ steps.current_version.outputs.version }}"
-          BUMP_TYPE="${{ steps.bump_type.outputs.type }}"
+      # - name: Bump version
+      #   id: new_version
+      #   run: |
+      #     CURRENT="${{ steps.current_version.outputs.version }}"
+      #     BUMP_TYPE="${{ steps.bump_type.outputs.type }}"
           
-          # Parse version
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+      #     # Parse version
+      #     IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
           
-          case $BUMP_TYPE in
-            major)
-              MAJOR=$((MAJOR + 1))
-              MINOR=0
-              PATCH=0
-              ;;
-            minor)
-              MINOR=$((MINOR + 1))
-              PATCH=0
-              ;;
-            patch)
-              PATCH=$((PATCH + 1))
-              ;;
-          esac
+      #     case $BUMP_TYPE in
+      #       major)
+      #         MAJOR=$((MAJOR + 1))
+      #         MINOR=0
+      #         PATCH=0
+      #         ;;
+      #       minor)
+      #         MINOR=$((MINOR + 1))
+      #         PATCH=0
+      #         ;;
+      #       patch)
+      #         PATCH=$((PATCH + 1))
+      #         ;;
+      #     esac
           
-          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
-          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
-          echo "New version: ${NEW_VERSION}"
+      #     NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+      #     echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+      #     echo "New version: ${NEW_VERSION}"
+
+      - name: Bump Version
+        id: version
+        uses: mogenius/gha-semver-bump@v1.0.0
+        with:
+          chart-path: .
 
       - name: Package and Push Helm Chart
         uses: mogenius/gha-helm-package-sign-push@v1.0.0
         with:
           chart-path: ./
           chart-name: cluster-issuer
-          version: ${{ steps.new_version.outputs.version }}
+          version: ${{ steps.version.outputs.new_version }}
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
           # chartmuseum-url: helm.mogenius.com
