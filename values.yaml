@@ -2,3 +2,4 @@
 global:
   clusterissuermail: "user@example.com"
   ingressclass: "traefik"
+
