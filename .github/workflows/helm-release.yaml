@@ -28,6 +28,10 @@ env:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write      # ← Das fehlt!
+      id-token: write      
     steps:
       - uses: actions/checkout@v4
       
