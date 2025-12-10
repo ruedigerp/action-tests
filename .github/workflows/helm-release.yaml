@@ -102,7 +102,7 @@ jobs:
         with:
           chart-path: ./
           chart-name: cluster-issuer
-          version: ${{ steps.version.outputs.version }}
+          version: ${{ steps.new_version.outputs.version }}
           # chartmuseum-url: helm.mogenius.com
           chartmuseum-url: ""
           # chartmuseum-user: ${{ secrets.MO_HELMUSER }}
