@@ -89,11 +89,11 @@ jobs:
           echo "New version: ${NEW_VERSION}"
 
 
-      # - name: Import GPG key
-      #   uses: crazy-max/ghaction-import-gpg@v6
-      #   with:
-      #     gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-      #     passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       # - name: Setup Helm
       #   uses: azure/setup-helm@v4
@@ -102,7 +102,7 @@ jobs:
       #   uses: sigstore/cosign-installer@v3
 
       - name: Package and Push Helm Chart
-        uses: ruedigerp/ruedigerp/helm-package-sign-push@v1.0.2
+        uses: ruedigerp/ruedigerp/helm-package-sign-push@v1.0.3
         with:
           chart-path: ./
           chart-name: cluster-issuer
