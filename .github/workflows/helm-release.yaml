@@ -99,7 +99,7 @@ jobs:
         with:
           chart-path: ./
           chart-name: cluster-issuer
-          version: ${{ steps.version.outputs.new_version }}
+          version: ${{ steps.version.outputs.new-version }}
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
           # chartmuseum-url: helm.mogenius.com
