@@ -102,7 +102,7 @@ jobs:
       #   uses: sigstore/cosign-installer@v3
 
       - name: Package and Push Helm Chart
-        uses: ruedigerp/ruedigerp/helm-package-sign-push@v1.0.3
+        uses: ruedigerp/ruedigerp/helm-package-sign-push@v1.0.4
         with:
           chart-path: ./
           chart-name: cluster-issuer
