@@ -89,7 +89,7 @@ jobs:
           echo "New version: ${NEW_VERSION}"
 
       - name: Package and Push Helm Chart
-        uses: mogenius/helm-package-sign-push@v1.0.0
+        uses: mogenius/gha-helm-package-sign-push@v1.0.0
         with:
           chart-path: ./
           chart-name: cluster-issuer
