@@ -89,11 +89,11 @@ jobs:
           echo "New version: ${NEW_VERSION}"
 
 
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      # - name: Import GPG key
+      #   uses: crazy-max/ghaction-import-gpg@v6
+      #   with:
+      #     gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+      #     passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       # - name: Setup Helm
       #   uses: azure/setup-helm@v4
@@ -107,6 +107,8 @@ jobs:
           chart-path: ./
           chart-name: cluster-issuer
           version: ${{ steps.new_version.outputs.version }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
           # chartmuseum-url: helm.mogenius.com
           chartmuseum-url: ""
           # chartmuseum-user: ${{ secrets.MO_HELMUSER }}
