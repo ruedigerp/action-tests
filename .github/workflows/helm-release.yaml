@@ -22,7 +22,7 @@ env:
   CHART_PATH: ./
   # CHART_PATH: charts/mogenius-cluster-issuer
   REGISTRY: ghcr.io
-  HELMNAME: "mogenius-cluster-issuer"
+  HELMNAME: "cluster-issuer"
   REGISTRY_PATH: ${{ github.repository_owner }}/helm-charts
 
 jobs:
