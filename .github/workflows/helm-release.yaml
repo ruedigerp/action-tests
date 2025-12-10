@@ -100,8 +100,8 @@ jobs:
       - name: Package and Push Helm Chart
         uses: ruedigerp/ruedigerp/helm-package-sign-push@v1
         with:
-          chart-path: ./charts/my-chart
-          chart-name: my-chart
+          chart-path: ./
+          chart-name: cluster-issuer
           version: ${{ steps.version.outputs.version }}
           # chartmuseum-url: helm.mogenius.com
           # chartmuseum-user: ${{ secrets.MO_HELMUSER }}
